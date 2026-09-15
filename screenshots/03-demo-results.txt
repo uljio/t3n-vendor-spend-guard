@@ -1,0 +1,72 @@
+VendorSpendGuard — live testnet demo results
+tenantDid: did:t3n:9e635209846abc76b1b5532f31fd8cd124c070fb
+contract: z:9e635209846abc76b1b5532f31fd8cd124c070fb:spend-guard @ 0.1.0
+at: 2026-09-15T10:11:32.866Z
+
+== allow_check ==
+{
+  "decision": "ALLOW",
+  "reasons": [
+    "all policy checks passed"
+  ],
+  "policy_version": 1,
+  "amount_cents": 40000,
+  "currency": "USD",
+  "dual_approve_required": false
+}
+
+== allow_reserve ==
+{
+  "reserved": true,
+  "remaining_cents": 960000,
+  "reservation_id": "rsv-demo-allow-1789467088867",
+  "reason": "ok"
+}
+
+== allow_confirm ==
+{
+  "confirmed": true,
+  "audit_seq": 1
+}
+
+== deny_check ==
+{
+  "decision": "DENY",
+  "reasons": [
+    "amount 900000 exceeds max_single_purchase 250000",
+    "amount 900000 above 15% band of reference 40000"
+  ],
+  "policy_version": 1,
+  "amount_cents": 900000,
+  "currency": "USD",
+  "dual_approve_required": true
+}
+
+== deny_inactive ==
+{
+  "decision": "DENY",
+  "reasons": [
+    "vendor shadow-corp inactive"
+  ],
+  "policy_version": 1,
+  "amount_cents": 1000,
+  "currency": "USD",
+  "dual_approve_required": false
+}
+
+== audit ==
+{
+  "events": [
+    {
+      "seq": 0,
+      "kind": "reserve",
+      "payload": "{\"reservation_id\":\"rsv-demo-allow-1789467088867\",\"amount_cents\":40000,\"remaining\":960000}"
+    },
+    {
+      "seq": 1,
+      "kind": "confirm",
+      "payload": "{\"reservation_id\":\"rsv-demo-allow-1789467088867\",\"receipt_ref\":\"rcpt-demo-001\",\"amount_cents\":40000}"
+    }
+  ],
+  "next_seq": 2
+}
