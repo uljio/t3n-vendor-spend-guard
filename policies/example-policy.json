@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "currency": "USD",
+  "max_single_purchase": 250000,
+  "daily_team_cap": 1000000,
+  "require_dual_approve_above": 100000,
+  "allowed_categories": ["saas", "cloud", "hardware", "travel"],
+  "blocked_merchants": [],
+  "price_band_pct": 15
+}
