@@ -1,0 +1,40 @@
+/// VendorSpendGuard — enterprise procurement policy inside a T3N TEE.
+/// Capability set is intentionally small: tenant-context + logging + kv-store.
+/// No outbound HTTP required for the core policy loop (useful + maintainable).
+package z:vendor-spend-guard@0.1.0;
+
+world vendor-spend-guard {
+    import host:tenant/tenant-context@1.0.0;
+    import host:interfaces/logging@2.1.0;
+    import host:interfaces/kv-store@2.1.0;
+
+    export contracts;
+}
+
+interface contracts {
+    record generic-input {
+        input:        option<list<u8>>,
+        user-profile: option<list<u8>>,
+        context:      option<list<u8>>,
+    }
+
+    /// Evaluate a purchase request against policies / vendors / budgets.
+    /// Input:  { sku, vendor_id, category, amount_cents, currency, requester }
+    /// Output: { decision: "ALLOW"|"DENY", reasons: [string], policy_version }
+    check-policy: func(req: generic-input) -> result<list<u8>, string>;
+
+    /// Optimistically reserve budget after ALLOW.
+    /// Input:  { request_id, amount_cents, team_id }
+    /// Output: { reserved: bool, remaining_cents, reservation_id }
+    reserve-budget: func(req: generic-input) -> result<list<u8>, string>;
+
+    /// Finalize a purchase and append an audit row.
+    /// Input:  { reservation_id, receipt_ref, amount_cents }
+    /// Output: { confirmed: bool, audit_seq }
+    confirm-purchase: func(req: generic-input) -> result<list<u8>, string>;
+
+    /// Read recent audit events for the tenant.
+    /// Input:  { limit }
+    /// Output: { events: [...] }
+    get-audit: func(req: generic-input) -> result<list<u8>, string>;
+}
